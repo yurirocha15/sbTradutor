@@ -19,6 +19,7 @@ class VerboseLog {
 	        return *this;
 	    }    
 	private:
+		//boost::format é utilizado para permitir a impressão de variáveis usando o overload do operador %.
 		boost::format fmt;
 		verbose_level level;
 };

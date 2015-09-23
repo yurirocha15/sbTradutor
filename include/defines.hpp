@@ -20,6 +20,7 @@ enum verbose_level {
 };
 
 
+//Como variáveis nao podem ser definidas em um arquivo .hpp, elas são declaradas extern e definidas no arquivo defines.cpp
 extern program_mode PROGRAM_MODE;
 extern verbose_level GLOBAL_LEVEL;
 
