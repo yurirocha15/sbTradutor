@@ -56,7 +56,7 @@ if (APPLE OR WIN32)
     set(Boost_USE_STATIC_LIBS TRUE)
 endif()
 #Add below all the used boost packages
-find_package(Boost REQUIRED COMPONENTS program_options)
+find_package(Boost REQUIRED COMPONENTS program_options regex)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 
@@ -74,6 +74,7 @@ set(SOURCES
 	src/verboseLog.cpp
     src/defines.cpp
     src/preprocessing.cpp
+    src/lexical.cpp
 	)
 
 add_executable(${PROJECT_NAME} main.cpp ${SOURCES})

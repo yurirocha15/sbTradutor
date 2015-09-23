@@ -1,5 +1,7 @@
-#ifndef _PREPROCESSING_H_
-#define _PREPROCESSING_H_
+#ifndef _PREPROCESSING_HPP_
+#define _PREPROCESSING_HPP_
+
+#include <string>
 
 class Preprocessing
 {
@@ -18,4 +20,4 @@ public:
 
 
 
-#endif //_PREPROCESSING_H_
+#endif //_PREPROCESSING_HPP_

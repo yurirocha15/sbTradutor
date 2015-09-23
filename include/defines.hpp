@@ -1,5 +1,5 @@
-#ifndef _DEFINES_H_
-#define _DEFINES_H_
+#ifndef _DEFINES_HPP_
+#define _DEFINES_HPP_
 
 //Esse arquivo contem os defines e variáveis globais
 enum program_mode
@@ -23,6 +23,7 @@ enum verbose_level {
 //Como variáveis nao podem ser definidas em um arquivo .hpp, elas são declaradas extern e definidas no arquivo defines.cpp
 extern program_mode PROGRAM_MODE;
 extern verbose_level GLOBAL_LEVEL;
+extern bool THERE_WAS_ERROR;
 
 
 
@@ -30,4 +31,4 @@ extern verbose_level GLOBAL_LEVEL;
 
 
 
-#endif //_DEFINES_H_
+#endif //_DEFINES_HPP_
