@@ -166,7 +166,8 @@ int main(int argc, char* argv[])
     };
 
 
-
+    Lexical lexical;
+    lexical.CheckLabel(outputFile, 1);
     //Exeplos output
     log<LOG_DEBUG>("TO DEBUGANDO %1% %2%") % 5 % inputFile;
     log<LOG_INFO>("VERBOSANDO");

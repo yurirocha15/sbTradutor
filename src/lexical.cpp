@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-std::string Lexical::regex_label_str = "(^[a-zA-Z][a-zA-Z0-9_]*)|(^[_][a-zA-Z0-9_]+)";
+std::string Lexical::regex_label_str = "([_a-zA-Z][a-zA-Z0-9_]*)";
 boost::regex Lexical::regex_label (regex_label_str);
 
 Lexical::Lexical()
@@ -16,7 +16,7 @@ Lexical::~Lexical()
 
 }
 
-bool Lexical::CheckLabel(std::string label)
+bool Lexical::CheckLabel(std::string label, int line)
 {
 	try
 	{
@@ -24,7 +24,7 @@ bool Lexical::CheckLabel(std::string label)
 			return false;
 		else
 		{
-			log<LOG_ERROR>("Variavel ou Rotulo %1% Invalido.") % label;
+			log<LOG_ERROR>("Linha %1%: A Variável ou Rotulo %2% é Invalido.", "Léxico") % line % label;
 			return true;
 		}
 	}

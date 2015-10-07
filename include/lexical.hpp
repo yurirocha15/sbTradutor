@@ -9,7 +9,7 @@ class Lexical
 public:
 	Lexical();
 	virtual ~Lexical();
-	bool CheckLabel(std::string label);
+	bool CheckLabel(std::string label, int line);
 
 private:
 	static std::string regex_label_str;

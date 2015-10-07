@@ -1,6 +1,6 @@
 #include "verboseLog.hpp"
 
-VerboseLog::VerboseLog(std::string msg, verbose_level level) : fmt(msg), level(level)
+VerboseLog::VerboseLog(std::string msg, verbose_level level, std::string type) : fmt(msg), level(level), type(type)
 {
 }
 
@@ -13,10 +13,10 @@ VerboseLog::~VerboseLog()
 		switch(level)
 		{
 			case LOG_ERROR:
-				lvlString = std::string("ERROR");
+				lvlString = std::string("Erro");
 				break;
 			case LOG_WARNING:
-				lvlString = std::string("WARNING");
+				lvlString = std::string("Warning");
 				break;
 			case LOG_INFO:
 				lvlString = std::string("INFO");
@@ -28,6 +28,6 @@ VerboseLog::~VerboseLog()
 				lvlString = std::string(" ");
 
 		}
-		std::cout << "[" << lvlString << "] " << fmt << std::endl;
+		std::cout << "[" << lvlString << " " << type << "] " << fmt << std::endl;
 	}
 }
