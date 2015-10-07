@@ -1,5 +1,5 @@
-#include "lexical.hpp"
-#include "verboseLog.hpp"
+#include <lexical.hpp>
+#include <verboseLog.hpp>
 
 #include <iostream>
 
@@ -8,7 +8,7 @@ boost::regex Lexical::regex_label (regex_label_str);
 
 Lexical::Lexical()
 {
-	std::cout << "LOL" << std::endl;
+
 }
 
 Lexical::~Lexical()

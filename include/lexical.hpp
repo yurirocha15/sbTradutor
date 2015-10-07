@@ -8,7 +8,7 @@ class Lexical
 {
 public:
 	Lexical();
-	~Lexical();
+	virtual ~Lexical();
 	bool CheckLabel(std::string label);
 
 private:

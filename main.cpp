@@ -5,22 +5,24 @@
 
 
 //Classes
-#include "verboseLog.hpp"
-#include "defines.hpp"
+#include <verboseLog.hpp>
+#include <defines.hpp>
+#include <lexical.hpp>
+#include <preprocessing.hpp>
 
 void parseOpt(std::string *inputFile, std::string *outputFile, int argc, char* argv[])
 {
     namespace po = boost::program_options;
-    po::options_description desc("Allowed options");
+    po::options_description desc("Opções Permitidas");
     desc.add_options()
-        ("help,h", "Print help mesages.")
-        ("verbose,v", "Add verbosity to the program.")
+        ("help,h", "Imprime mensagem de ajuda.")
+        ("verbose,v", "Adiciona verbosidade ao programa.")
         ("pre,p", po::value<std::vector<std::string> >()->multitoken(),
-        "Preprocessing mode. Should receive 2 files as input.")
+        "Modo de preprocessamento. Deve receber como entrada 2 nomes de arquivos: Arquivo de entrada e de saída.")
         ("macro,m", po::value<std::vector<std::string> >()->multitoken(),
-        "Macro mode. Should receive 2 files as input.")
+        "Modo de processamento de Macros. Deve receber como entrada 2 nomes de arquivos: Arquivo de entrada e de saída.")
         ("output,o", po::value<std::vector<std::string> >()->multitoken(),
-        "Translating mode. Should receive 2 files as input.");
+        "Modo de Tradução completa. Deve receber como entrada 2 nomes de arquivos: Arquivo de entrada e de saída.");
 
     po::positional_options_description positionalOptions;
     po::variables_map vm; // Mapa contendo todas as opções, descrições e valores
@@ -33,13 +35,13 @@ void parseOpt(std::string *inputFile, std::string *outputFile, int argc, char* a
         //imprime texto de ajuda e termina o programa
         if (vm.count("help")) 
         { 
-            std::cout << "Translator: an assembly translator."                     << std::endl;
-            std::cout << "Works only with one ficticious assembly code."           << std::endl;
-            std::cout                                                              << std::endl;
-            std::cout << "Usage:"                                                  << std::endl;
-            std::cout << "  " << argv[0] << " [options] [inputFile] [outputFile] " << std::endl;
-            std::cout                                                              << std::endl;
-            std::cout << desc                                                      << std::endl;
+            std::cout << "Tradutor. Traduz códigos em assembly inventado para binário."     << std::endl;
+            std::cout << "Funciona apenas com assembly inventado."                          << std::endl;
+            std::cout                                                                       << std::endl;
+            std::cout << "Regras de Uso:"                                                   << std::endl;
+            std::cout << "  " << argv[0] << " [opção] [arquivoDeEntrada] [arquivoDeSaida]"  << std::endl;
+            std::cout                                                                       << std::endl;
+            std::cout << desc                                                               << std::endl;
 
             exit(0); 
         }
@@ -52,7 +54,7 @@ void parseOpt(std::string *inputFile, std::string *outputFile, int argc, char* a
         //Ativa o level de log para o modo de verbosidade
         if (vm.count("verbose") && GLOBAL_LEVEL < LOG_INFO) 
         { 
-            log<LOG_INFO>("Verbose Printing.");
+            log<LOG_INFO>("Verbosidade ativada.");
             GLOBAL_LEVEL = LOG_INFO;
         }
 
@@ -70,7 +72,7 @@ void parseOpt(std::string *inputFile, std::string *outputFile, int argc, char* a
             //senão, lance um erro
             else
             {
-                throw "the required argument for option '-p' is missing";
+                throw "Os argumentos requeridos pela opção '-p' estão errados ou incompletos.";
             }
         }
 
@@ -86,7 +88,7 @@ void parseOpt(std::string *inputFile, std::string *outputFile, int argc, char* a
             }
             else
             {
-                throw "the required argument for option '-m' is missing";
+                throw "Os argumentos requeridos pela opção '-m' estão errados ou incompletos.";
             }
         }
 
@@ -102,7 +104,7 @@ void parseOpt(std::string *inputFile, std::string *outputFile, int argc, char* a
             }
             else
             {
-                throw "the required argument for option '-o' is missing";
+                throw "Os argumentos requeridos pela opção '-o' estão errados ou incompletos.";
             }
         }
     }
@@ -116,7 +118,7 @@ void parseOpt(std::string *inputFile, std::string *outputFile, int argc, char* a
     //pega erros lançados manualmente
     catch(const char* e)
     {
-        std::cerr << e << std::endl;
+        log<LOG_ERROR>("%1%") % e;
         std::cout << desc << std::endl;
         exit(1);
     }
@@ -136,22 +138,26 @@ int main(int argc, char* argv[])
 
     switch(PROGRAM_MODE)
     {
-    case MODE_PRE:
+        case MODE_PRE:
+        {
+            Preprocessing preprocessing(inputFile, outputFile);
+            break;
+        }
+        case MODE_MACRO:
+        {
 
-        break;
-    case MODE_MACRO:
+            break;
+        }
+        case MODE_OUTPUT:
+        {
 
-        break;
-    case MODE_OUTPUT:
-
-        break;
-    default:
-        log<LOG_ERROR>("Mode not found.");
-        return 1;
+            break;
+        }
+        default:
+            log<LOG_ERROR>("Modo não encontrado.");
+            return 1;
     };
 
-    std::cout << inputFile << std::endl;
-    std::cout << outputFile << std::endl;
 
 
     //Exeplos output

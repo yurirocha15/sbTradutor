@@ -7,7 +7,11 @@ class Preprocessing
 {
 public:
 	Preprocessing(std::string inputFile, std::string outputFile);
-	~Preprocessing();
+	virtual ~Preprocessing();
+
+private:
+	std::string inputFile;
+	std::string outputFile;
 	
 };
 
