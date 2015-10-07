@@ -140,7 +140,14 @@ int main(int argc, char* argv[])
     {
         case MODE_PRE:
         {
-            Preprocessing preprocessing(inputFile, outputFile);
+            try
+            {
+                Preprocessing preprocessing(inputFile, outputFile);
+            }
+            catch(const char* e)
+            {
+                return 1;
+            }
             break;
         }
         case MODE_MACRO:

@@ -75,6 +75,7 @@ set(SOURCES
     src/defines.cpp
     src/preprocessing.cpp
     src/lexical.cpp
+    src/fileLoader.cpp
 	)
 
 add_executable(${PROJECT_NAME} main.cpp ${SOURCES})

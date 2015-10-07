@@ -34,7 +34,7 @@ vector<string> FileLoader::LoadFile(string fileName)
 	{
 		//caso o arquivo não exista ou não possa ser aberto, o método lançará um erro para avisar o programa que o chamou.
 		log<LOG_ERROR>("Impossível abrir o arquivo %1%.") % fileName;
-		throw "Impossível abrir o arquivo."
+		throw "Impossível abrir o arquivo.";
 	}
 
 	return lineVector;
@@ -45,14 +45,14 @@ void FileLoader::SaveFile(string fileName, vector<string> lineVector)
 	ofstream outputFile (fileName);
 	if(outputFile.is_open())
 	{
-		for(int i = 0; i < lineVector.size(); i++)
+		for(unsigned int i = 0; i < lineVector.size(); i++)
 		{
 			outputFile << lineVector[i];
 		}
 	}
 	else
 	{
-		log<LOG_ERROR>("Impossível abrir o arquivo %1%.") % fileName;
-		throw "Impossível abrir o arquivo."
+		log<LOG_ERROR>("Impossível criar o arquivo %1%.") % fileName;
+		throw "Impossível criar o arquivo.";
 	}
 }

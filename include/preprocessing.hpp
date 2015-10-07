@@ -2,6 +2,7 @@
 #define _PREPROCESSING_HPP_
 
 #include <string>
+#include <vector>
 
 class Preprocessing
 {
@@ -12,6 +13,7 @@ public:
 private:
 	std::string inputFile;
 	std::string outputFile;
+	std::vector<std::string> lineVector;
 	
 };
 
