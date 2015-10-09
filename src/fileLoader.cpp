@@ -36,6 +36,10 @@ vector<string> FileLoader::LoadFile(string fileName)
 		log<LOG_ERROR>("Impossível abrir o arquivo %1%.") % fileName;
 		throw "Impossível abrir o arquivo.";
 	}
+	for(std::string line : lineVector)
+	{
+		
+	}
 
 	return lineVector;
 }

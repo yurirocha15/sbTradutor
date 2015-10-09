@@ -9,6 +9,8 @@
 #include <defines.hpp>
 #include <lexical.hpp>
 #include <preprocessing.hpp>
+#include <parser.hpp>
+#include <symbol.hpp>
 
 void parseOpt(std::string *inputFile, std::string *outputFile, int argc, char* argv[])
 {
