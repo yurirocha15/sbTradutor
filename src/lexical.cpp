@@ -16,7 +16,7 @@ Lexical::~Lexical()
 
 }
 
-bool Lexical::CheckLabel(std::string label, int line)
+bool Lexical::CheckLabel(const std::string& label, const int& line)
 {
 	try
 	{

@@ -1,6 +1,6 @@
 #include "verboseLog.hpp"
 
-VerboseLog::VerboseLog(std::string msg, verbose_level level, std::string type) : fmt(msg), level(level), type(type)
+VerboseLog::VerboseLog(const std::string& msg, const verbose_level& level, const std::string& type) : fmt(msg), level(level), type(type)
 {
 }
 

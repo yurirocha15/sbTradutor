@@ -1,6 +1,7 @@
 #include <fileLoader.hpp>
 #include <verboseLog.hpp>
 
+#include <algorithm>
 #include <fstream>
 
 using namespace std;
@@ -15,7 +16,7 @@ FileLoader::~FileLoader()
 
 }
 
-vector<string> FileLoader::LoadFile(string fileName)
+vector<string> FileLoader::LoadFile(const string& fileName)
 {
 	//Cria string e vetor de strings que irá salvar o texto de entrada
 	string line;
@@ -26,6 +27,7 @@ vector<string> FileLoader::LoadFile(string fileName)
 	{
 		while(getline(inputFile,line))
 		{
+			transform(line.begin(), line.end(), line.begin(), ::toupper);
 			lineVector.push_back(line);
 		}
 		inputFile.close();
@@ -44,7 +46,7 @@ vector<string> FileLoader::LoadFile(string fileName)
 	return lineVector;
 }
 
-void FileLoader::SaveFile(string fileName, vector<string> lineVector)
+void FileLoader::SaveFile(const string& fileName, const vector<string>& lineVector)
 {
 	ofstream outputFile (fileName);
 	if(outputFile.is_open())

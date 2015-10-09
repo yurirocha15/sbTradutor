@@ -9,8 +9,8 @@ class FileLoader
 public:
 	FileLoader();
 	virtual ~FileLoader();
-	std::vector<std::string> LoadFile(std::string fileName);
-	void SaveFile(std::string fileName, std::vector<std::string> lineVector);
+	std::vector<std::string> LoadFile(const std::string& fileName);
+	void SaveFile(const std::string& fileName, const std::vector<std::string>& lineVector);
 
 
 
