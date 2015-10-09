@@ -9,7 +9,7 @@
 
 class VerboseLog {
 	public:
-		VerboseLog(std::string msg, verbose_level level, std::string type);
+		VerboseLog(const std::string& msg, const verbose_level& level, const std::string& type);
 		~VerboseLog();
 		//Operador para permitir a utilização de variaveis.
 		//Utilização: log<verbose_level>("Frase exemplo %1% %2% %3% fim da frase") % arg1 % arg2 % arg3;
@@ -27,7 +27,7 @@ class VerboseLog {
 
 //Para melhor formatação a classe não será chamada diretamente. A funçao auxiliar a seguir fará esse serviço.
 template <verbose_level level>
-VerboseLog log(std::string msg, std::string type = "")
+VerboseLog log(const std::string& msg, const std::string& type = "")
 {
 	return VerboseLog(msg, level, type);
 }

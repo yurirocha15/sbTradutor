@@ -7,7 +7,7 @@ std::string Preprocessing::regex_comment_str = ";.*$";
 boost::regex Preprocessing::regex_comment (regex_comment_str);
 boost::regex Preprocessing::regex_space ("[[:space:]]+", boost::regex_constants::egrep);
 
-Preprocessing::Preprocessing(std::string inputFile, std::string outputFile)
+Preprocessing::Preprocessing(const std::string& inputFile, const std::string& outputFile)
 {
 	this->inputFile = inputFile + ".asm";
 	this->outputFile = outputFile + ".pre";

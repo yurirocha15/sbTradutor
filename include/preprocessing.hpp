@@ -8,7 +8,7 @@
 class Preprocessing
 {
 public:
-	Preprocessing(std::string inputFile, std::string outputFile);
+	Preprocessing(const std::string& inputFile, const std::string& outputFile);
 	virtual ~Preprocessing();
 	void RemoveComments();
 	void RemoveSpaces();
