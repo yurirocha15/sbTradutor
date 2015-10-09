@@ -1,6 +1,7 @@
 #include <fileLoader.hpp>
 #include <verboseLog.hpp>
 
+#include <algorithm>
 #include <fstream>
 
 using namespace std;
@@ -26,6 +27,7 @@ vector<string> FileLoader::LoadFile(string fileName)
 	{
 		while(getline(inputFile,line))
 		{
+			transform(line.begin(), line.end(), line.begin(), ::toupper);
 			lineVector.push_back(line);
 		}
 		inputFile.close();
