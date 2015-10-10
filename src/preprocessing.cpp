@@ -31,7 +31,7 @@ Preprocessing::Preprocessing(const std::string& inputFile, const std::string& ou
 	//Salva as linhas que iniciam as seções de data e texto como "infinito" para sabermos se as diretivas EQU estão nas posições certas.
 	sectionTextLine = INF;
 	sectionDataLine = INF;
-	RemoveCommentsAndSpacesAndBlankLines();
+	Process();
 
 
 	for(auto& line : lineVector)
@@ -46,7 +46,7 @@ Preprocessing::~Preprocessing()
 
 }
 
-void Preprocessing::RemoveCommentsAndSpacesAndBlankLines()
+void Preprocessing::Process()
 {
 	Lexical lexical;
 	boost::smatch matches;

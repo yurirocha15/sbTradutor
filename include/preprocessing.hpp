@@ -21,7 +21,7 @@ class Preprocessing
 public:
 	Preprocessing(const std::string& inputFile, const std::string& outputFile);
 	virtual ~Preprocessing();
-	void RemoveCommentsAndSpacesAndBlankLines();
+	void Process();
 
 private:
 	std::string inputFile;
