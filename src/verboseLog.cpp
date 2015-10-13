@@ -13,10 +13,10 @@ VerboseLog::~VerboseLog()
 		switch(level)
 		{
 			case LOG_ERROR:
-				lvlString = std::string("Erro");
+				lvlString = std::string("\033[1;31mErro \033[0m");
 				break;
 			case LOG_WARNING:
-				lvlString = std::string("Warning");
+				lvlString = std::string("\033[1;33mWarning \033[0m");
 				break;
 			case LOG_INFO:
 				lvlString = std::string("INFO");
@@ -28,6 +28,6 @@ VerboseLog::~VerboseLog()
 				lvlString = std::string(" ");
 
 		}
-		std::cout << "[" << lvlString << " " << type << "] " << fmt << std::endl;
+		std::cout << "[" << lvlString << type << "] " << fmt << std::endl;
 	}
 }
