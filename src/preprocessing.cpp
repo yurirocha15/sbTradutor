@@ -33,6 +33,14 @@ Preprocessing::Preprocessing(const std::string& inputFile, const std::string& ou
 	sectionDataLine = INF;
 	Process();
 
+	try
+	{
+		lineVector = fileLoader.SaveFile(this->outputFile, this->lineVector);
+	}
+	catch(const char* e)
+	{
+		throw e;
+	}
 
 	for(auto& line : lineVector)
 	{
