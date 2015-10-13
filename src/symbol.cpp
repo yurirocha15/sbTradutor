@@ -5,9 +5,10 @@
 
 using namespace std;
 
-Symbol::Symbol(std::string name, int adress)
+Symbol::Symbol(std::string name, int line, int adress)
 {
 	this->name = name;
+	this->line = line;
 	this->adress = adress;
 }
 
@@ -26,12 +27,22 @@ string Symbol::getName()
 	return name;
 }
 
+void Symbol::setLine(int line)
+{
+	this->line = line;
+}
+
+int Symbol::getLine()
+{
+	return line;
+}
+
 void Symbol::setAdress(int adress)
 {
 	this->adress = adress;
 }
 
-Symbol::getAdress()
+int Symbol::getAdress()
 {
 	return adress;
 }

@@ -7,21 +7,22 @@
 class Token
 {
 public:
-	Token(std::string name, std::string type, int adress);
+	Token(std::string name, int line);
 	virtual ~Token();
 
 	void setName(std::string name);
 	std::string getName();
 	void setType(std::string type);
 	std::string getType();
-	void setAdress(int adress);
-	int getAdress();
+	void setLine(int line);
+	int getLine();
+	void setOp(std::string op);
+	std::string getOp();
 private:
 	std::string name;
 	std::string type;
-	int adress;
-
-
+	std::string op;
+	int line;
 };
 
 #endif //_TOKEN_HPP_

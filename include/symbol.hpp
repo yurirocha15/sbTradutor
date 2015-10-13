@@ -7,17 +7,19 @@
 class Symbol
 {
 public:
-	Symbol(std::string name, int adress);
+	Symbol(std::string name, int line, int adress);
 	virtual ~Symbol();
 
 	void setName(std::string name);
 	std::string getName();
+	void setLine(int line);
+	int getLine();
 	void setAdress(int adress);
 	int getAdress();
 private:
 	std::string name;
+	int line;
 	int adress;
-
 
 };
 

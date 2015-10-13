@@ -78,6 +78,8 @@ set(SOURCES
     src/fileLoader.cpp
 		src/symbol.cpp
 		src/parser.cpp
+		src/token.cpp
+		src/montador.cpp
 	)
 
 add_executable(${PROJECT_NAME} main.cpp ${SOURCES})

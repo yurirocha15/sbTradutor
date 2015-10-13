@@ -5,11 +5,10 @@
 
 using namespace std;
 
-Token::Token(std::string name, std::string type, int adress)
+Token::Token(std::string name, int line)
 {
 	this->name = name;
-	this->type = type;
-	this->adress = adress;
+	this->line = line;
 }
 
 Token::~Token()
@@ -37,12 +36,22 @@ string Token::getType()
 	return type;
 }
 
-void Token::setAdress(int adress)
+void Token::setLine(int line)
 {
-	this->adress = adress;
+	this->line = line;
 }
 
-Token::getAdress()
+int Token::getLine()
 {
-	return adress;
+	return line;
+}
+
+void Token::setOp(string op)
+{
+	this->op = op;
+}
+
+string Token::getOp()
+{
+	return op;
 }
