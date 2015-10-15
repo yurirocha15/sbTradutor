@@ -35,18 +35,12 @@ Preprocessing::Preprocessing(const std::string& inputFile, const std::string& ou
 
 	try
 	{
-		lineVector = fileLoader.SaveFile(this->outputFile, this->lineVector);
+		fileLoader.SaveFile(this->outputFile, this->lineVector);
 	}
 	catch(const char* e)
 	{
 		throw e;
 	}
-
-	for(auto& line : lineVector)
-	{
-		std::cout << line << std::endl;
-	}
-
 }
 
 Preprocessing::~Preprocessing()
@@ -82,21 +76,27 @@ void Preprocessing::Process()
 		if(line->find(" EQU ") != std::string::npos)
 		{
 			if(i > sectionTextLine)
-				log<LOG_ERROR>("Linha %1%: EQU depois da SECTION Text.", "Semântico") % (i+1);
-
-			std::vector<std::string> words;
-			boost::split(words, *line, boost::is_any_of("\t "));
-			if(words[1] != "EQU")
 			{
-				log<LOG_ERROR>("Linha %1%: EQU inválido.", "Sintático") % (i+1);
+				log<LOG_ERROR>("Linha %1%: EQU depois da SECTION Text.", "Semântico") % (i+1);
+				*line = "";
 			}
 			else
 			{
-				Equ tmp_equ(std::stoi(words[2]), words[0]);
-				equs.push_back(tmp_equ);
-				log<LOG_DEBUG>("%1% equals %2%.") % tmp_equ.label % tmp_equ.value;
-				lexical.CheckLabel(tmp_equ.label, i+1);
-				*line = "";
+				std::vector<std::string> words;
+				boost::split(words, *line, boost::is_any_of("\t "));
+				if(words[1] != "EQU")
+				{
+					log<LOG_ERROR>("Linha %1%: EQU inválido.", "Sintático") % (i+1);
+					*line = "";
+				}
+				else
+				{
+					Equ tmp_equ(std::stoi(words[2]), words[0]);
+					equs.push_back(tmp_equ);
+					log<LOG_DEBUG>("%1% equals %2%.") % tmp_equ.label % tmp_equ.value;
+					lexical.CheckLabel(tmp_equ.label, i+1);
+					*line = "";
+				}
 			}
 		}
 		if(line->find("IF ") != std::string::npos)
@@ -132,9 +132,6 @@ void Preprocessing::Process()
 			}
 
 		}
-
-
-
 	}
 	lineVector.erase(std::remove_if(lineVector.begin(), lineVector.end(), [](std::string line){return line == "";}), lineVector.end());
 }

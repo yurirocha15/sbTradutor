@@ -9,6 +9,7 @@
 #include <defines.hpp>
 #include <lexical.hpp>
 #include <preprocessing.hpp>
+#include <macro.hpp>
 //#include <parser.hpp>
 //#include <symbol.hpp>
 
@@ -154,7 +155,14 @@ int main(int argc, char* argv[])
         }
         case MODE_MACRO:
         {
-
+            try
+            {
+                Macro macro(inputFile, outputFile);
+            }
+            catch(const char* e)
+            {
+                return 1;
+            }
             break;
         }
         case MODE_OUTPUT:
