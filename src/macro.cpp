@@ -1,3 +1,8 @@
+#include <algorithm>
+#include <boost/algorithm/string.hpp>
+
+
+
 #include <macro.hpp>
 #include <preprocessing.hpp>
 #include <verboseLog.hpp>
@@ -45,6 +50,7 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 	auto line = lineVector.begin();
 	bool macroStarted = false;
 	int index = 0;
+	std::vector<std::string> *arguments;
 	for(int i = 0; line != lineVector.end(); ++line, i++)
 	{
 		MNT tmp_nameTable;
@@ -85,15 +91,20 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 					else
 					{
 						words[0].pop_back();
+						//Check if label is valid
 						lexical.CheckLabel(words[0], i+1);
 						tmp_nameTable.name = words[0];
 						tmp_nameTable.numArg = words.size() - 2;
 						tmp_nameTable.index = index++;
 						nameTable.push_back(tmp_nameTable);
+						//copy all the elements from the vector starting from the third one
+						//arguments = new std::vector<std::string>(advance(begin(words), 2), end(words));
 					}
 				}
 
 			}
+		}
+	}
 }
 
 Macro::~Macro()
