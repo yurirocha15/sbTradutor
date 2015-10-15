@@ -53,7 +53,7 @@ void FileLoader::SaveFile(const string& fileName, const vector<string>& lineVect
 	{
 		for(unsigned int i = 0; i < lineVector.size(); i++)
 		{
-			outputFile << lineVector[i] << std::endl;
+			outputFile << lineVector[i];
 		}
 	}
 	else

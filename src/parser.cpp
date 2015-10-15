@@ -1,14 +1,18 @@
 #include <parser.hpp>
 #include <verboseLog.hpp>
+#include <preprocessing.hpp>
 #include <boost/algorithm/string.hpp>
 
 
 #include <iostream>
+#include <cstdlib>
 
 using namespace std;
 
-Parser::Parser(std::vector<std::string> lineVector, std::vector<Symbol>& labelTable, std::vector<Token>& tokenList)
+Parser::Parser(const std::string& inputFile, const std::string& outputFile, std::vector<Symbol>& labelTable, std::vector<Token>& tokenList)
 {
+	vector<string> lineVector;
+	Preprocessing scanner(inputFile,outputFile);
 	vector<Token> listaTokens = this->firstPass(lineVector, labelTable);
 }
 
@@ -63,6 +67,8 @@ void Parser::secondPass(std::vector<Symbol>& labelTable, std::vector<Token>& tok
 {
 	//A segunda Passagem irá classificar todos os elementos em Line Vector, simbolo, INSTRUÇÃO e diretiva;
 	this->isInstruction(tokenList);
+	this->isDirective(tokenList);
+	this->isLabel(labelTable,tokenList);
 }
 
 void Parser::isInstruction(std::vector<Token>& tokenList)
@@ -181,6 +187,7 @@ void Parser::isDirective(vector<Token>& tokenList)
 void Parser::isLabel(vector<Symbol>& labelTable, vector<Token>& tokenList)
 {
 	unsigned int i,j;
+	string convert;
 
 	for(i = 0; i < tokenList.size(); i++)
 	{
@@ -191,7 +198,8 @@ void Parser::isLabel(vector<Symbol>& labelTable, vector<Token>& tokenList)
 				if(tokenList[i].getName() == labelTable[j].getName())
 				{
 					tokenList[i].setType("LABEL");
-					tokenList[i].setOp(labelTable[j].getAdress());
+					convert = to_string(labelTable[j].getAdress());
+					tokenList[i].setOp(convert);
 					break;
 				}
 			}

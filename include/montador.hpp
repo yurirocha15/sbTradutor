@@ -7,7 +7,7 @@
 class Montador
 {
 public:
-	Montador();
+	Montador(const std::string& inputFile, const std::string& outputFile);
 	virtual ~Montador();
 
 

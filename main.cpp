@@ -10,8 +10,9 @@
 #include <lexical.hpp>
 #include <preprocessing.hpp>
 #include <macro.hpp>
-//#include <parser.hpp>
-//#include <symbol.hpp>
+#include <parser.hpp>
+#include <symbol.hpp>
+#include <montador.hpp>
 
 void parseOpt(std::string *inputFile, std::string *outputFile, int argc, char* argv[])
 {
@@ -178,6 +179,7 @@ int main(int argc, char* argv[])
 
     Lexical lexical;
     lexical.CheckLabel(outputFile, 1);
+    Montador montador(inputFile,outputFile);
     //Exeplos output
     log<LOG_DEBUG>("TO DEBUGANDO %1% %2%") % 5 % inputFile;
     log<LOG_INFO>("VERBOSANDO");

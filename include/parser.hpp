@@ -9,7 +9,7 @@
 class Parser
 {
 public:
-	Parser(std::vector<std::string> lineVector, std::vector<Symbol>& labelTable, std::vector<Token>& tokenList);
+	Parser(const std::string& inputFile, const std::string& outputFile, std::vector<Symbol>& labelTable, std::vector<Token>& tokenList);
 	virtual ~Parser();
 private:
 	std::vector<Token> firstPass(std::vector<std::string> lineVector, std::vector<Symbol>& labelTable);
