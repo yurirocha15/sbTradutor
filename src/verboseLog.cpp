@@ -28,6 +28,6 @@ VerboseLog::~VerboseLog()
 				lvlString = std::string(" ");
 
 		}
-		std::cout << "[" << lvlString << type << "] " << fmt << std::endl;
+		std::cout << "[" << lvlString << "\033[1;31m" << type << "\033[0m] " << fmt << std::endl;
 	}
 }

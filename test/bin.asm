@@ -1,7 +1,11 @@
 1REW EQU 1
 LOL EQu 0
 SECTION TeXt
-
+TESt: MACRO &A &B &C
+add &a
+copy &a, &b
+sub &c
+endmacro
 
 
 INPUT OLD_DATA

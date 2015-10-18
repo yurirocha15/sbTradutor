@@ -138,8 +138,6 @@ void Preprocessing::Process()
 
 		}
 
-
-
 	}
 	lineVector.erase(std::remove_if(lineVector.begin(), lineVector.end(), [](std::string line){return line == "";}), lineVector.end());
 }
