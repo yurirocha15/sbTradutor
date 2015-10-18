@@ -168,7 +168,7 @@ int main(int argc, char* argv[])
         }
         case MODE_OUTPUT:
         {
-
+            Montador montador(inputFile,outputFile);
             break;
         }
         default:
@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
 
     Lexical lexical;
     lexical.CheckLabel(outputFile, 1);
-    Montador montador(inputFile,outputFile);
+    
     //Exeplos output
     log<LOG_DEBUG>("TO DEBUGANDO %1% %2%") % 5 % inputFile;
     log<LOG_INFO>("VERBOSANDO");

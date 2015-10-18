@@ -16,6 +16,7 @@ class Macro
 public:
 	Macro(const std::string& inputFile, const std::string& outputFile);
 	virtual ~Macro();
+	std::vector<std::string> GetLineVector();
 
 private:
 	std::vector<MNT> nameTable;

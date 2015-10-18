@@ -24,22 +24,13 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 	try
 	{
 		Preprocessing preprocessing(inputFile, outputFile);
+		lineVector = preprocessing.GetLineVector();
 	}
 	catch(const char* e)
 	{
 		throw e;
 	}
-
-	FileLoader fileLoader;
-	try
-	{
-		lineVector = fileLoader.LoadFile(this->inputFile);
-	}
-	catch(const char* e)
-	{
-		throw e;
-	}
-
+	
 	for(auto& line : lineVector)
 	{
 		log<LOG_DEBUG>("%1%") % line;
@@ -109,4 +100,9 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 
 Macro::~Macro()
 {
+}
+
+std::vector<std::string> Macro::GetLineVector()
+{
+	return lineVector;
 }

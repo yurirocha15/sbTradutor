@@ -22,6 +22,7 @@ public:
 	Preprocessing(const std::string& inputFile, const std::string& outputFile);
 	virtual ~Preprocessing();
 	void Process();
+	std::vector<std::string> GetLineVector();
 
 private:
 	std::string inputFile;

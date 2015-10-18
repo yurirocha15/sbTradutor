@@ -1,6 +1,6 @@
 #include <parser.hpp>
 #include <verboseLog.hpp>
-#include <preprocessing.hpp>
+#include <macro.hpp>
 #include <boost/algorithm/string.hpp>
 
 
@@ -12,7 +12,8 @@ using namespace std;
 Parser::Parser(const std::string& inputFile, const std::string& outputFile, std::vector<Symbol>& labelTable, std::vector<Token>& tokenList)
 {
 	vector<string> lineVector;
-	Preprocessing scanner(inputFile,outputFile);
+	Macro scanner(inputFile,outputFile);
+	lineVector = scanner.GetLineVector();
 	vector<Token> listaTokens = this->firstPass(lineVector, labelTable);
 }
 

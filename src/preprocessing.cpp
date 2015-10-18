@@ -54,6 +54,11 @@ Preprocessing::~Preprocessing()
 
 }
 
+std::vector<std::string> Preprocessing::GetLineVector()
+{
+	return lineVector;
+}
+
 void Preprocessing::Process()
 {
 	Lexical lexical;
