@@ -1,0 +1,22 @@
+DATA VIR DEPOIS DA SEÇÃO TEXT															Semântico				ok
+
+COPY;																											
+CONST DEVE ACEITAR HEXADECIMAL;														
+	
+declarações ausentes;																			label table	
+Declarações Repetidas;																		label table
+Pulo para rótulos Inválidos;															
+Diretivas Inválidas;																			
+Instruções Inválidas;																			
+diretivas ou instruções na seção errada;									facil			Semântico	ok
+Divisão por zero;																					facil			
+instruções com a quantidade de operando inválida;					facil			sintático ok
+tokens inválidos																					OK				léxico
+Dois rótulos na mesma linha;															
+rótulos repetidos;																				label Table
+seção TEXT ou DATA faltante;															facil			Semântico			ok
+seção inválida;																						facil			semântico			ok
+tipo de argumento inválido;																facil			sintático		Fazendo...
+endereço de memória não reservado;												
+modificação de um valor constante;
+
