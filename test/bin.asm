@@ -6,6 +6,11 @@ add &a
 copy &a, &b
 sub &c
 endmacro
+Add DOIS
+2Macro: MACRO &q &f
+add &q
+mult &f
+endmacro
 
 
 INPUT OLD_DATA
@@ -25,6 +30,7 @@ COPY NEW_DATA OLD_DATA
 LOAD OLD_DATA
 
 Labes: test q we lol
+LOLS: 2macro kk tt
 
 JMPP L1
 

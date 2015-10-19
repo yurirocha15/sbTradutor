@@ -14,10 +14,12 @@
 
 Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 {
+	//Pra checagem da label do macro
 	Lexical lexical;
 
 	log<LOG_INFO>("Arquivos de Macro. Input: %1%. Output: %2%.") % this->inputFile % this->outputFile;
 
+	//Inicia o preprocessamento antes de fazer o processamento de macro
 	try
 	{
 		Preprocessing preprocessing(inputFile, outputFile);
@@ -27,16 +29,14 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 	{
 		throw e;
 	}
-	
-	for(auto& line : lineVector)
-	{
-		log<LOG_DEBUG>("%1%") % line;
-	}
 
+	//Salva a posicao das sections test e data para checagem de erros
 	int sectionTextLine = INF;
 	int sectionDataLine = INF;
+	//Utilizados para a checagem de erros
 	bool macroStarted = false;
 	bool codeStarted = false;
+	//index para salvar a posição no macro na MNT
 	int index = 0;
 	std::vector<std::string> *arguments = NULL;
 	std::vector<std::string> tmp_defTable;
@@ -66,6 +66,7 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 				macroStarted = false;
 				delete arguments;
 				arguments = NULL;
+				tmp_defTable.clear();
 			}
 			*line = "";
 		}
@@ -243,7 +244,7 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 		}
 	}
 	lineVector.erase(std::remove_if(lineVector.begin(), lineVector.end(), [](std::string line){return line == "";}), lineVector.end());
-	
+
 	this->outputFile = outputFile + ".mcr";
 	FileLoader file;
 	file.SaveFile(this->outputFile, lineVector);
