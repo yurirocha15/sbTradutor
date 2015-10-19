@@ -8,8 +8,8 @@ sub &c
 endmacro
 
 Macro2: MACRO 
-add &a
-mult bbb
+add dois
+mult old_data
 endmacro
 
 
@@ -25,19 +25,19 @@ LOAD OLD_DATA
 SUB TMP_DATA ; askfslfsad  safdk 
 STORE TMP_DATA
 OUTPUT TMP_DATA
-Test Lol Haha q
+Test new_data old_data dois
 COPY NEW_DATA OLD_DATA
 LOAD OLD_DATA
 
-Labes: test q we lol
-LOLS: macro2 aaaa
+Labes: test dois new_data old_data
+LOLS: macro2
 
 JMPP L1
 
 
 
 STOP
-
+section data
 DOIS: CONST 2
 
 OLD_DATA: SPACE ;sadsaasd ;asdad ads;s;adsadas

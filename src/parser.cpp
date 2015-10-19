@@ -28,7 +28,7 @@ Parser::Parser(const std::string& inputFile, const std::string& outputFile, std:
 		log<LOG_DEBUG>("Nome: %1% Tipo: %2%") % testeName % testeTipo;
 
 	}
-	detectError(vector<Token> tokenList);
+	detectError(tokenList);
 }
 
 Parser::~Parser()
@@ -235,8 +235,8 @@ void Parser::isLabel(vector<Symbol>& labelTable, vector<Token>& tokenList)
 void Parser::detectError(vector<Token> tokenList)
 {
 	unsigned int i;
-	int linhaData;
-	int linhaText;
+	int linhaData = 0;
+	int linhaText = 0;
 	int dataAntes;
 	int atual;
 	int p1,p2,p3;
@@ -252,13 +252,13 @@ void Parser::detectError(vector<Token> tokenList)
 		{
 			linhaData = tokenList[i].getLine();
 		}
-		//---------------------Section Data ou Section Text faltante-------------------------
-		if((linhaData|linhaText) == 0)
-		{
-			log<LOG_ERROR>("Linha 0: Section Data ou Text faltando", "Semântico");	
-		}
-		//-----------------------------------------------------------------------------------
 	}
+	//---------------------Section Data ou Section Text faltante-------------------------
+	if((linhaData|linhaText) == 0)
+	{
+		log<LOG_ERROR>("Linha 0: Section Data ou Text faltando", "Semântico");	
+	}
+	//-----------------------------------------------------------------------------------
 	//-------------------------------Section Data em Antes da Section TEXT-------------------------------------------
 	if(linhaData < linhaText)
 	{
@@ -272,7 +272,7 @@ void Parser::detectError(vector<Token> tokenList)
 		//------------------------Diretivas ou Instruções na sessão errada Errada----------------------------------------
 		if(!dataAntes)
 		{
-			if((tokenList[i].getName() == "CONST")|(tokenList[i].getName() == "SPACE"))
+			if((tokenList[i].getName() == "CONST")||(tokenList[i].getName() == "SPACE"))
 			{
 				//Se a linha de const ou space for anterior a linha de Section Data
 				if(tokenList[i].getLine() < linhaData)
@@ -280,7 +280,7 @@ void Parser::detectError(vector<Token> tokenList)
 					log<LOG_ERROR>("Linha %1%: Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();			
 				}
 			}
-			if((tokenList[i].getType() == "INSTRUÇÃO")&&(tokenList[i].getLine() > linhaData))
+			if((tokenList[i].getType() == "INSTRUÇÃO") && (tokenList[i].getLine() < linhaData))
 			{
 				log<LOG_ERROR>("Linha %1%: Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();
 			}
@@ -290,12 +290,12 @@ void Parser::detectError(vector<Token> tokenList)
 			if((tokenList[i].getName() == "CONST")|(tokenList[i].getName() == "SPACE"))
 			{
 				//Se a linha de const ou space for anterior a linha de Section Data
-				if(tokenList[i].getLine() > linhaData)
+				if(tokenList[i].getLine() < linhaData)
 				{
 					log<LOG_ERROR>("Linha %1%: Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();			
 				}
 			}
-			if((tokenList[i].getType() == "INSTRUÇÃO")&&(tokenList[i].getLine() < linhaData))
+			if((tokenList[i].getType() == "INSTRUÇÃO")&&(tokenList[i].getLine() > linhaData))
 			{
 				log<LOG_ERROR>("Linha %1%: Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();
 			}
@@ -328,7 +328,7 @@ void Parser::detectError(vector<Token> tokenList)
 		}
 		//------------------------------------------------------------------------------------------------------------
 		//------------------------------------------Seção inválida----------------------------------------------------
-		if((tokenList[i].getName() == "SECTION")&&((tokenList[i+1].getName() != "TEXT")|(tokenList[i+1].getName() != "DATA")))
+		if((tokenList[i].getName() == "SECTION") && ((tokenList[i+1].getName() != "TEXT") && (tokenList[i+1].getName() != "DATA")))
 		{
 			log<LOG_ERROR>("Linha %1%: Seção Inválida", "Semântico") % tokenList[i].getLine();	
 		}

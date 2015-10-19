@@ -223,7 +223,16 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 								if(word[0] == '#')
 								{
 									word.erase(word.begin());
-									word = (*arguments)[std::stoi(word) - 1]; 
+									bool hasComma = false;
+									if (word.back() == ',')
+									{
+										hasComma = true;
+									}
+									word = (*arguments)[std::stoi(word) - 1];
+									if (hasComma)
+									{
+										word += ",";
+									}
 								}
 								tmp_defTable[0] += " " + word;
 							}
@@ -247,7 +256,16 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 								if(word[0] == '#')
 								{
 									word.erase(word.begin());
+									bool hasComma = false;
+									if (word.back() == ',')
+									{
+										hasComma = true;
+									}
 									word = (*arguments)[std::stoi(word) - 1]; 
+									if (hasComma)
+									{
+										word += ",";
+									}
 								}
 								line_defTable += " " + word;
 							}
