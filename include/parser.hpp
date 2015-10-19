@@ -17,6 +17,7 @@ private:
 	void isLabel(std::vector<Symbol>& labelTable, std::vector<Token>& tokenList);
 	void isDirective(std::vector<Token>& tokenList);
 	void isInstruction(std::vector<Token>& tokenList);
+	void detectError(std::vector<Token> tokenList);
 };
 
 #endif //_PARSER_HPP_
