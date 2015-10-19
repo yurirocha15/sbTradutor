@@ -6,10 +6,10 @@ add &a
 copy &a, &b
 sub &c
 endmacro
-Add DOIS
-2Macro: MACRO &q &f
-add &q
-mult &f
+
+Macro2: MACRO 
+add &a
+mult bbb
 endmacro
 
 
@@ -30,7 +30,7 @@ COPY NEW_DATA OLD_DATA
 LOAD OLD_DATA
 
 Labes: test q we lol
-LOLS: 2macro kk tt
+LOLS: macro2 aaaa
 
 JMPP L1
 
