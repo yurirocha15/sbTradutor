@@ -20,10 +20,11 @@ LOAD OLD_DATA
 SUB TMP_DATA ; askfslfsad  safdk 
 STORE TMP_DATA
 OUTPUT TMP_DATA
+Test Lol Haha q
 COPY NEW_DATA OLD_DATA
 LOAD OLD_DATA
 
-
+Labes: test q we lol
 
 JMPP L1
 

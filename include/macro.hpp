@@ -7,7 +7,7 @@
 typedef struct MNT
 {
 	std::string name;
-	int numArg;
+	unsigned int numArg;
 	int index;
 }MNT;
 

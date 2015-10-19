@@ -14,9 +14,6 @@
 
 Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 {
-	this->inputFile = outputFile + ".pre";
-	this->outputFile = outputFile + ".mcr";
-
 	Lexical lexical;
 
 	log<LOG_INFO>("Arquivos de Macro. Input: %1%. Output: %2%.") % this->inputFile % this->outputFile;
@@ -38,24 +35,26 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 
 	int sectionTextLine = INF;
 	int sectionDataLine = INF;
-	auto line = lineVector.begin();
 	bool macroStarted = false;
 	bool codeStarted = false;
 	int index = 0;
 	std::vector<std::string> *arguments = NULL;
 	std::vector<std::string> tmp_defTable;
-	for(int i = 0; i < lineVector.size(); ++line, i++)
+
+	auto line = lineVector.begin();
+
+	for(int i = 0; i < (int)lineVector.size(); ++line, i++)
 	{
 		MNT tmp_nameTable;
 		if(*line == "SECTION TEXT")
 		{
 			sectionTextLine = i;
 		}
-		if(*line == "SECTION DATA")
+		else if(*line == "SECTION DATA")
 		{
 			sectionDataLine = i;
 		}
-		if (*line == "ENDMACRO")
+		else if (*line == "ENDMACRO")
 		{
 			if(!macroStarted)
 			{
@@ -68,6 +67,7 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 				delete arguments;
 				arguments = NULL;
 			}
+			*line = "";
 		}
 		else if(line->find(" MACRO ") != std::string::npos)
 		{
@@ -116,6 +116,7 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 				}
 
 			}
+			*line = "";
 		}
 		else if (macroStarted)
 		{
@@ -123,16 +124,15 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 			{
 				for(auto& arg : *arguments)
 				{
-					log<LOG_DEBUG>("Arg: %1%") % arg;
-					size_t pos;
+					std::string::size_type pos;
 					if((pos = line->find(" " + arg)) != std::string::npos)
 					{
 						line->replace(pos + 1, std::string(arg).length(), "#" + std::to_string((&arg - &(*arguments)[0]) + 1));
-						log<LOG_DEBUG>("Macro:   %1%") % *line;
 					}
 				}
 			}
 			tmp_defTable.push_back(*line);
+			*line = "";
 		}
 		else
 		{
@@ -143,6 +143,7 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 		{
 			for(auto& nt : nameTable)
 			{
+				bool firstLineDefined = false;
 				if(line->find(nt.name) != std::string::npos)
 				{
 					std::vector<std::string> words;
@@ -157,20 +158,95 @@ Macro::Macro(const std::string& inputFile, const std::string& outputFile)
 						std::vector<std::string>::const_iterator last = std::end(words);
 						arguments = new std::vector<std::string>(first, last);
 						tmp_defTable = defTable[nt.index];
-						
+
+						std::vector<std::string> words2;
+						boost::split(words2, tmp_defTable[0], boost::is_any_of("\t "));
+						tmp_defTable[0] = "";
+						for(auto& word : words2)
+						{
+							if(word[0] == '#')
+							{
+								word.erase(word.begin());
+								word = (*arguments)[std::stoi(word) - 1]; 
+							}
+							tmp_defTable[0] += " " + word;
+						}
+						boost::trim(tmp_defTable[0]);	
+						firstLineDefined = true;				
 					}
+					else if(words[1] == nt.name)
+					{
+						if(words.size() - 2 != nt.numArg)
+						{
+							log<LOG_ERROR>("Linha %1%: Numero incorreto de argumentos da macro %2%.", "Semântico") % (i + 1) % nt.name;
+						}
+						std::vector<std::string>::const_iterator first = std::begin(words) + 2;
+						std::vector<std::string>::const_iterator last = std::end(words);
+						arguments = new std::vector<std::string>(first, last);
+						tmp_defTable = defTable[nt.index];
+
+						std::vector<std::string> words2;
+						boost::split(words2, tmp_defTable[0], boost::is_any_of("\t "));
+						tmp_defTable[0] = words[0];
+						for(auto& word : words2)
+						{
+							if(word[0] == '#')
+							{
+								word.erase(word.begin());
+								word = (*arguments)[std::stoi(word) - 1]; 
+							}
+							tmp_defTable[0] += " " + word;
+						}
+						boost::trim(tmp_defTable[0]);	
+						firstLineDefined = true;	
+					}
+					
+					if(firstLineDefined)
+					{
+						*line = tmp_defTable[0];
+						tmp_defTable.erase(std::begin(tmp_defTable));
+
+						for(auto& line_defTable : tmp_defTable)
+						{
+							std::vector<std::string> words2;
+							boost::split(words2, line_defTable, boost::is_any_of("\t "));
+							line_defTable = "";
+							for(auto& word : words2)
+							{
+								if(word[0] == '#')
+								{
+									word.erase(word.begin());
+									word = (*arguments)[std::stoi(word) - 1]; 
+								}
+								line_defTable += " " + word;
+							}
+							boost::trim(line_defTable);
+
+							if(line != std::end(lineVector))
+							{
+								++line;
+								i++;
+								line = lineVector.insert(line, line_defTable);
+							}
+							else
+							{
+								lineVector.push_back(line_defTable);
+								i++;
+								++line;
+							}
+
+							
+						}
+					}	
 				}
 			}
 		}
 	}
-
-	for(auto& tmp : defTable)
-	{
-		for(auto& tmp2 : tmp)
-		{
-			log<LOG_DEBUG>("DEFTABLE: %1%") % tmp2;
-		}
-	}
+	lineVector.erase(std::remove_if(lineVector.begin(), lineVector.end(), [](std::string line){return line == "";}), lineVector.end());
+	
+	this->outputFile = outputFile + ".mcr";
+	FileLoader file;
+	file.SaveFile(this->outputFile, lineVector);
 }
 
 Macro::~Macro()
