@@ -240,6 +240,7 @@ void Parser::detectError(vector<Token> tokenList)
 	int dataAntes;
 	int atual;
 	int p1,p2,p3;
+	bool hasStop = false;
 	//---------------------------------------Loop Que detecta a linha da Section Data e Text---------------------------
 	for(i = 0; i < tokenList.size(); i++)
 	{
@@ -317,6 +318,7 @@ void Parser::detectError(vector<Token> tokenList)
 			}
 			else if(tokenList[i].getName() == "STOP")
 			{
+				hasStop = true;
 				atual = tokenList[i].getLine();
 				p1 = tokenList[i+1].getLine();
 				if((p1 == atual))
@@ -343,5 +345,10 @@ void Parser::detectError(vector<Token> tokenList)
 		}
 		//---------------------------------------------------------------------------------------------------------------
 		//-----------------------------------Tipo de Argumento Inválido--------------------------------------------------
+	}
+	//Código sem instrução stop
+	if(!hasStop)
+	{
+		log<LOG_ERROR>("Linha 0: Código sem instrução STOP.", "Semântico");	
 	}
 }
