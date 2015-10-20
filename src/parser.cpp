@@ -304,13 +304,22 @@ void Parser::detectError(vector<Token> tokenList)
 		//-------------------------------Instruções com quantidade de operando inválidas-----------------------------
 		if(tokenList[i].getType() == "INSTRUÇÃO")
 		{
-			if(tokenList[i].getName() == "MULT")
+			if(tokenList[i].getName() == "COPY")
 			{
 				atual = tokenList[i].getLine();
 				p1 = tokenList[i+1].getLine();
 				p2 = tokenList[i+2].getLine();
 				p3 = tokenList[i+3].getLine();
-				if(((p1|p2) != atual)|(p3 == atual))
+				if((p1 != atual)||(p2 != atual) || (p3 == atual))
+				{
+					log<LOG_ERROR>("Linha %1%: Instrução com quantidade de operandos Inválidos", "Sintático") % tokenList[i].getLine();		
+				}
+			}
+			else if(tokenList[i].getName() == "STOP")
+			{
+				atual = tokenList[i].getLine();
+				p1 = tokenList[i+1].getLine();
+				if((p1 == atual))
 				{
 					log<LOG_ERROR>("Linha %1%: Instrução com quantidade de operandos Inválidos", "Sintático") % tokenList[i].getLine();		
 				}
