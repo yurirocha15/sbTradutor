@@ -31,8 +31,12 @@ Parser::Parser(const std::string& inputFile, const std::string& outputFile, std:
 	{
 		testeName = tokenList[i].getName();
 		testeTipo = tokenList[i].getType();
-		log<LOG_DEBUG>("Nome: %1% Tipo: %2%") % testeName % testeTipo;
-
+		log<LOG_DEBUG>("Nome: %1% Tipo: %2% Linha: %3%") % testeName % testeTipo %tokenList[i].getLine();
+		if(tokenList[i].getSize() != 999)
+		{
+			log<LOG_DEBUG>("Tamanho Memoria: %1% ") % tokenList[i].getSize();	
+		}
+		
 	}
 	detectError(labelTable, tokenList);
 
@@ -51,8 +55,9 @@ std::vector<Token> Parser::firstPass(std::vector<std::string> lineVector, std::v
 	//método responsável em executar a primeira passagem, ou seja, irá percorrer todas as linhas, e quanto achar labels 
 	//(tokens terminados em ":") adiciona-lo a tabela de simbolos, juntamente com seu endereço
 
-	unsigned int i,j; //contadores
+	unsigned int i,j,k; //contadores
 	int adress = 0;
+	int achouRotulo;
 	vector<string> tokensLine;
 	std::vector<Token> tokenList;
 	char last;
@@ -60,27 +65,85 @@ std::vector<Token> Parser::firstPass(std::vector<std::string> lineVector, std::v
 
 	for(i = 0; i < lineVector.size(); i++)
 	{
+		achouRotulo = 0;
 		boost::split(tokensLine,lineVector[i],boost::is_any_of(" "));
 		for(j = 0;j < tokensLine.size();j++)
 		{
 			last = tokensLine[j].back();
 			if(last == ':' )
 			{
+				if(achouRotulo)
+				{
+					log<LOG_ERROR>("Linha %1%: Dois Rótulos na mesma Linha", "Semântico") % (i+1); 	
+				}
+				achouRotulo = 1;
 				labelName = tokensLine[j].substr(0,tokensLine[j].size()-1);
-				Token token(labelName,i+1);
+				for(k = 0; k < labelTable.size();k++)
+				{
+					if(labelName == labelTable[k].getName())
+					{
+						log<LOG_ERROR>("Linha %1%: Declaração Repetida", "Semântico") % (i+1); 
+					}
+				}
+				Token token(tokensLine[j],i+1);
+
 				token.setType("LABEL");
 				tokenList.push_back(token);
-				//---Transformar int em String---
 				
-				//-------------------------------
 				Symbol label(labelName,i+1,adress);
 				labelTable.push_back(label);
+			}
+			else if(tokensLine[j] == "CONST")
+			{
+				if(j+1 < tokensLine.size())
+				{
+					size_t found = tokenList[i].getName().find_first_of("0123456789");
+					if(found)
+					{
+						tokenList.back().setSize(stoi(tokensLine[j+1]));
+						tokenList.back().setSpace_const("CONST");
+						labelTable.back().setSize(stoi(tokensLine[j+1]));
+						labelTable.back().setSpace_const("CONST");
+						adress ++;
+						break;
+					}
+				}
+				else
+				{
+					log<LOG_ERROR>("Linha %1%: endereço de Memoria não Reservado", "Sintático") % (i+1); 
+				}
+			}
+			else if(tokensLine[j] == "SPACE")
+			{
+				if(j+1 < tokensLine.size())
+				{
+					size_t found = tokenList[i].getName().find_first_of("0123456789");
+					if(found)
+					{
+						tokenList.back().setSize(stoi(tokensLine[j+1]));
+						tokenList.back().setSpace_const("SPACE");
+						labelTable.back().setSize(stoi(tokensLine[j+1]));
+						labelTable.back().setSpace_const("SPACE");
+						adress += stoi(tokensLine[j+1]);
+						break;
+					}
+				else
+					{
+						tokenList.back().setSize(1);
+						labelTable.back().setSize(1);
+						adress++;	
+					}
+				}
 			}
 			else
 			{
 				Token token(tokensLine[j],i+1);
 				tokenList.push_back(token);
-				adress++;
+				if((tokensLine[j] != "SECTION")&&(tokensLine[j] != "DATA")&&(tokensLine[j] != "TEXT"))
+				{
+					adress++;	
+				}
+				
 			}
 		}
 		tokensLine.erase(tokensLine.begin(),tokensLine.end());
@@ -90,21 +153,11 @@ std::vector<Token> Parser::firstPass(std::vector<std::string> lineVector, std::v
 
 void Parser::secondPass(std::vector<Symbol>& labelTable, std::vector<Token>& tokenList)
 {
-	unsigned int i;
+	string last;
 	//A segunda Passagem irá classificar todos os elementos em Line Vector, simbolo, INSTRUÇÃO e diretiva;
 	this->isInstruction(tokenList);
 	this->isDirective(tokenList);
-	this->isLabel(labelTable,tokenList);
-	//Laço para detectar se algum token não foi classificado;
-	for(i = 0; i < tokenList.size();i++)
-	{
-		size_t found = tokenList[i].getName().find_first_of("123456789");
-		if(tokenList[i].getType().empty()&&(found != string::npos))
-		{
-
-		}
-	}
-	
+	this->isLabel(labelTable,tokenList);	
 }
 
 void Parser::isInstruction(std::vector<Token>& tokenList)
@@ -241,6 +294,8 @@ void Parser::isLabel(vector<Symbol>& labelTable, vector<Token>& tokenList)
 					tokenList[i].setType("LABEL");
 					convert = to_string(labelTable[j].getAdress());
 					tokenList[i].setOp(convert);
+					tokenList[i].setSize(labelTable[j].getSize());
+					tokenList[i].setSpace_const(labelTable[j].getSpace_const());
 					break;
 				}
 			}
@@ -256,7 +311,9 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 	int dataAntes;
 	int atual;
 	int p1,p2,p3;
+	int labelDeclaration;
 	bool hasStop = false;
+	string last;
 	//---------------------------------------Loop Que detecta a linha da Section Data e Text---------------------------
 	for(i = 0; i < tokenList.size(); i++)
 	{
@@ -294,12 +351,13 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 				//Se a linha de const ou space for anterior a linha de Section Data
 				if(tokenList[i].getLine() < linhaData)
 				{
-					log<LOG_ERROR>("Linha %1%: Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();			
+					log<LOG_ERROR>("Linha %1%: 1Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();			
 				}
 			}
 			if((tokenList[i].getType() == "INSTRUÇÃO") && (tokenList[i].getLine() < linhaData))
 			{
-				log<LOG_ERROR>("Linha %1%: Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();
+				log<LOG_ERROR>("Linha %1%: 2Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();
+				cout << "Entrou Dota" << endl;
 			}
 		}
 		else
@@ -309,12 +367,12 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 				//Se a linha de const ou space for anterior a linha de Section Data
 				if(tokenList[i].getLine() < linhaData)
 				{
-					log<LOG_ERROR>("Linha %1%: Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();			
+					log<LOG_ERROR>("Linha %1%: 3Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();			
 				}
 			}
 			if((tokenList[i].getType() == "INSTRUÇÃO")&&(tokenList[i].getLine() > linhaData))
 			{
-				log<LOG_ERROR>("Linha %1%: Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();
+				log<LOG_ERROR>("Linha %1%: 4Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();
 			}
 		} 
 		//-----------------------------------------------------------------------------------------------------------
@@ -370,11 +428,8 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 				//----------------------------------------------------------------------------------------------------------------
 			}
 		}
-		//Divisão por 0
-		/*
-		if(tokenList[i].getName() == "DIV")
-		{
-			for(j = 0; j < labelTable.size(); j++)
+		//For do yuri para divisao 0;
+			/*for(j = 0; j < labelTable.size(); j++)
 			{
 				if(tokenList[i+1].getName() == labelTable[j].getName())
 				{
@@ -383,8 +438,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 					tokenList[i].setOp(convert);
 					break;
 				}
-			}
-		}*/
+			}*/
 		//------------------------------------------------------------------------------------------------------------
 		//------------------------------------------Seção inválida----------------------------------------------------
 		if((tokenList[i].getName() == "SECTION") && ((tokenList[i+1].getName() != "TEXT") && (tokenList[i+1].getName() != "DATA")))
@@ -392,10 +446,87 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 			log<LOG_ERROR>("Linha %1%: Seção Inválida", "Semântico") % tokenList[i].getLine();	
 		}
 		//---------------------------------------------------------------------------------------------------------------
+		//----------------------------------Declaração Ausente-----------------------------------------------------------
+		if(i !=0)
+		{
+			if((tokenList[i-1].getType() == "INSTRUÇÃO")&&(tokenList[i].getType().empty()))
+			{
+				//log<LOG_ERROR>("Linha %1%: Declaração Ausente", "Semântico") % tokenList[i].getLine();
+				cout<<"Declaração Ausente, Linha: "<<tokenList[i].getLine()<<endl;
+			}
+		}
+		//----------------------------------------------------------------------------------------------------------
+		//-----------------------------------Pulos para rótulos Inválidos---------------------------------------------
+		if((tokenList[i].getName() == "JMP")|(tokenList[i].getName() == "JMPP")|(tokenList[i].getName() == "JMPN")|(tokenList[i].getName() == "JMPZ"))
+		{
+			//log<LOG_ERROR>("Linha %1%: Pulo para rótulo Inválido", "Semântico") % tokenList[i].getLine();
+			cout<<"Pulo para rótulo inválido, Linha: "<<tokenList[i].getLine()<<endl;
+		}
 	}
 	//Código sem instrução stop
 	if(!hasStop)
 	{
 		log<LOG_ERROR>("Linha 0: Código sem instrução STOP.", "Semântico");	
+	}
+	//Laço para detectar se algum token não foi classificado;
+	for(i = 0; i < tokenList.size();i++)
+	{
+		//Divisão por 0
+		
+		if(tokenList[i].getName() == "DIV")
+		{
+			if(tokenList[i+1].getSize() == 0)
+			{
+				log<LOG_ERROR>("Linha %1%: Divisão Por Zero", "Semântico") % tokenList[i].getLine();
+			}
+		}
+		if(tokenList[i].getType().empty())
+		{
+			//Se ele for o primeiro elemento da linha ou depois de uma declaração de label na mesma linha:
+			if(i != 0)
+			{
+				last = tokenList[i-1].getName().back();
+				if(last == ":")
+				{
+					labelDeclaration = 1;
+				}
+				else
+				{
+					labelDeclaration = 0;
+				}
+				//---------------------------------------Instrução Inválida------------------------------------------
+				if((tokenList[i-1].getLine() < tokenList[i].getLine())|labelDeclaration)
+				{
+					//Se a palavra Desconhecida estiver entre a  linha Text e DATA e passar na condição Acima
+					if((tokenList[i].getLine() > linhaText)&&(tokenList[i].getLine() < linhaData))
+					{
+						cout<<"Instrução inválida!! Linha:"<<tokenList[i].getLine()<<endl;
+						//log<LOG_ERROR>("Linha %1%: Instrução Inválida", "Sintático") % tokenList[i].getLine();
+						//log<LOG_ERROR>("DOMINGAO DO FAUSTAO");
+					}
+							
+				}
+				//---------------------------------------------------------------------------------------------------
+			}
+			if((tokenList[i].getLine() > linhaData)&&(labelDeclaration))
+			{
+				if((tokenList[i].getName() != "SPACE")&&(tokenList[i].getName() != "CONST"))
+				{
+					//log<LOG_ERROR>("Linha %1%: Diretiva Inválida", "Sintático") % tokenList[i].getLine();
+					cout<<"Diretiva inválida!! Linha:"<<tokenList[i].getLine()<<endl;
+				}
+			}	
+		}
+		//-----------------------------------Diretiva Inválida-----------------------------------------------
+		//Se o token atual é DATA OU TEXT e o anterior não é SECTION:
+		atual = i;
+		if((atual-1) >= 0)
+		{
+			if((tokenList[i-1].getName() != "SECTION")&&((tokenList[i].getName() == "DATA")|(tokenList[i].getName() == "TEXT")))
+			{
+				log<LOG_ERROR>("Linha %1%: Diretiva Inválida", "Sintático") % tokenList[i].getLine();	
+				//cout<<"Diretiva Inválida Linha: "<<tokenList[i].getLine()<<endl;
+			}
+		}
 	}
 }

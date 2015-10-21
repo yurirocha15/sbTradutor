@@ -27,6 +27,16 @@ string Symbol::getName()
 	return name;
 }
 
+void Symbol::setSpace_const(std::string space_const)
+{
+	this->space_const = space_const;
+}
+
+string Symbol::getSpace_const()
+{
+	return space_const;
+}
+
 void Symbol::setLine(int line)
 {
 	this->line = line;
@@ -45,4 +55,14 @@ void Symbol::setAdress(int adress)
 int Symbol::getAdress()
 {
 	return adress;
+}
+
+void Symbol::setSize(int size)
+{
+	this->size = size;
+}
+
+int Symbol::getSize()
+{
+	return size;
 }
