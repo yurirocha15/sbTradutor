@@ -305,9 +305,10 @@ void Parser::isLabel(vector<Symbol>& labelTable, vector<Token>& tokenList)
 
 void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 {
-	unsigned int i;
+	unsigned int i,j;
 	int linhaData = 0;
 	int linhaText = 0;
+	int existeLabel;
 	int dataAntes;
 	int atual;
 	int p1,p2,p3;
@@ -459,8 +460,20 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 		//-----------------------------------Pulos para rótulos Inválidos---------------------------------------------
 		if((tokenList[i].getName() == "JMP")|(tokenList[i].getName() == "JMPP")|(tokenList[i].getName() == "JMPN")|(tokenList[i].getName() == "JMPZ"))
 		{
-			log<LOG_ERROR>("Linha %1%: Pulo para rótulo Inválido", "Semântico") % tokenList[i].getLine();
-			cout<<"Pulo para rótulo inválido, Linha: "<<tokenList[i].getLine()<<endl;
+			existeLabel = 0;
+			for(j = 0; j < labelTable.size(); j++)
+			{
+				if(tokenList[i+1].getName() == labelTable[j].getName())
+				{
+					existeLabel = 1;
+				}
+			}
+			if(existeLabel == 0)
+			{
+				log<LOG_ERROR>("Linha %1%: Pulo para rótulo Inválido", "Semântico") % tokenList[i].getLine();
+				//cout<<"Pulo para rótulo inválido, Linha: "<<tokenList[i].getLine()<<endl;
+			}
+			
 		}
 	}
 	//Código sem instrução stop
