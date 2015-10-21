@@ -335,11 +335,12 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 		}
 		else if(tokenList[i].getName() == "TEXT")
 		{
-			linhaData = tokenList[i].getLine();
+			linhaText = tokenList[i].getLine();
 		}
 	}
+	log<LOG_DEBUG>("Linha data %1% Linha text %2%") % linhaData % linhaText;
 	//---------------------Section Data ou Section Text faltante-------------------------
-	if((linhaData|linhaText) == 0)
+	if((linhaData||linhaText) == 0)
 	{
 		log<LOG_ERROR>("Linha 0: Section Data ou Text faltando", "Semântico");	
 	}
@@ -357,7 +358,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 		//------------------------Diretivas ou Instruções na sessão errada Errada----------------------------------------
 		if(!dataAntes)
 		{
-			if((tokenList[i].getName() == "CONST")|(tokenList[i].getName() == "SPACE"))
+			if((tokenList[i].getName() == "CONST")||(tokenList[i].getName() == "SPACE"))
 			{
 				//Se a linha de const ou space for anterior a linha de Section Data
 				if(tokenList[i].getLine() < linhaData)
@@ -373,7 +374,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 		}
 		else
 		{
-			if((tokenList[i].getName() == "CONST")|(tokenList[i].getName() == "SPACE"))
+			if((tokenList[i].getName() == "CONST")||(tokenList[i].getName() == "SPACE"))
 			{
 				//Se a linha de const ou space for anterior a linha de Section Data
 				if(tokenList[i].getLine() < linhaData)
@@ -401,7 +402,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 					log<LOG_ERROR>("Linha %1%: Instrução com quantidade de operandos Inválidos", "Sintático") % tokenList[i].getLine();		
 				}
 				//-----------------------------------Tipo de Argumento Inválido--------------------------------------------------
-				if(((p1 == atual)&&(tokenList[i+1].getType() != "LABEL"))|((p2 == atual)&&(tokenList[i+2].getType() != "LABEL")))
+				if(((p1 == atual)&&(tokenList[i+1].getType() != "LABEL"))||((p2 == atual)&&(tokenList[i+2].getType() != "LABEL")))
 				{
 					log<LOG_ERROR>("Linha %1%: Tipo de Argumento Inválido", "Sintático") % tokenList[i].getLine();
 				}
@@ -427,7 +428,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 				atual = tokenList[i].getLine();
 				p1 = tokenList[i+1].getLine();
 				p2 = tokenList[i+2].getLine();
-				if((p1 != atual)|(p2 == atual))
+				if((p1 != atual)||(p2 == atual))
 				{
 					log<LOG_ERROR>("Linha %1%: Instrução com quantidade de operandos Inválidos", "Sintático") % tokenList[i].getLine();		
 				}
@@ -468,7 +469,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 		}
 		//----------------------------------------------------------------------------------------------------------
 		//-----------------------------------Pulos para rótulos Inválidos---------------------------------------------
-		if((tokenList[i].getName() == "JMP")|(tokenList[i].getName() == "JMPP")|(tokenList[i].getName() == "JMPN")|(tokenList[i].getName() == "JMPZ"))
+		if((tokenList[i].getName() == "JMP")||(tokenList[i].getName() == "JMPP")||(tokenList[i].getName() == "JMPN")||(tokenList[i].getName() == "JMPZ"))
 		{
 			existeLabel = 0;
 			for(j = 0; j < labelTable.size(); j++)
@@ -518,7 +519,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 					labelDeclaration = 0;
 				}
 				//---------------------------------------Instrução Inválida------------------------------------------
-				if((tokenList[i-1].getLine() < tokenList[i].getLine())|labelDeclaration)
+				if((tokenList[i-1].getLine() < tokenList[i].getLine())||labelDeclaration)
 				{
 					//Se a palavra Desconhecida estiver entre a  linha Text e DATA e passar na condição Acima
 					if((tokenList[i].getLine() > linhaText)&&(tokenList[i].getLine() < linhaData))
@@ -545,7 +546,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 		atual = i;
 		if((atual-1) >= 0)
 		{
-			if((tokenList[i-1].getName() != "SECTION")&&((tokenList[i].getName() == "DATA")|(tokenList[i].getName() == "TEXT")))
+			if((tokenList[i-1].getName() != "SECTION")&&((tokenList[i].getName() == "DATA")||(tokenList[i].getName() == "TEXT")))
 			{
 				log<LOG_ERROR>("Linha %1%: Diretiva Inválida", "Sintático") % tokenList[i].getLine();	
 				//cout<<"Diretiva Inválida Linha: "<<tokenList[i].getLine()<<endl;
