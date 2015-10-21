@@ -455,7 +455,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 		//------------------------------------------Seção inválida----------------------------------------------------
 		if((tokenList[i].getName() == "SECTION") && ((tokenList[i+1].getName() != "TEXT") && (tokenList[i+1].getName() != "DATA")))
 		{
-			log<LOG_ERROR>("Linha %1%: Seção Inválida", "Semântico") % tokenList[i].getLine();	
+			log<LOG_ERROR>("Linha %1%: Seção Inválida", "Sintático") % tokenList[i].getLine();	
 		}
 		//---------------------------------------------------------------------------------------------------------------
 		//----------------------------------Declaração Ausente-----------------------------------------------------------
@@ -551,6 +551,10 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 				log<LOG_ERROR>("Linha %1%: Diretiva Inválida", "Sintático") % tokenList[i].getLine();	
 				//cout<<"Diretiva Inválida Linha: "<<tokenList[i].getLine()<<endl;
 			}
+		}
+		if((tokenList[i].getName() == "STORE")&&(tokenList[i+1].getSpace_const() == "CONST"))
+		{
+			log<LOG_ERROR>("Linha %1%: Modificação de um valor Constante", "Semântico") % tokenList[i].getLine();
 		}
 	}
 }
