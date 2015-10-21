@@ -61,14 +61,43 @@ void FileLoader::SaveFile(const string& fileName, const vector<string>& lineVect
 
 void FileLoader::SaveObjectFile(const std::string& fileName, const std::vector<Token>& tokenList)
 {
+	std::string outputString = "";
 	ofstream outputFile (fileName);
 	if(outputFile.is_open())
 	{
 		for(auto token : tokenList)
 		{
 			if(token.getType() != "DIRETIVA")
-				outputFile << token.getOp() << " ";
+			{
+				if(token.getType() == "INSTRUÇÃO")
+				{
+					outputString = outputString + token.getOp() + " ";
+				}
+				else if(token.getType() == "LABEL")
+				{
+					if(token.getName().back() != ':')
+					{
+						outputString = outputString + token.getOp() + " ";
+					}
+					else
+					{
+						if(token.getSpace_const() == "SPACE")
+						{
+							for(int i = 0; i < token.getSize(); i++)
+							{
+								outputString = outputString + "0 ";
+							}
+						}
+						else if(token.getSpace_const() == "CONST")
+						{
+							outputString = outputString + std::to_string(token.getSize()) + " ";
+						}
+					}
+				}
+			}
 		}
+		outputString.pop_back();
+		outputFile << outputString;
 	}
 	else
 	{

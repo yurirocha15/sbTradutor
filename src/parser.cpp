@@ -451,7 +451,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 		{
 			if((tokenList[i-1].getType() == "INSTRUÇÃO")&&(tokenList[i].getType().empty()))
 			{
-				//log<LOG_ERROR>("Linha %1%: Declaração Ausente", "Semântico") % tokenList[i].getLine();
+				log<LOG_ERROR>("Linha %1%: Declaração Ausente", "Semântico") % tokenList[i].getLine();
 				cout<<"Declaração Ausente, Linha: "<<tokenList[i].getLine()<<endl;
 			}
 		}
@@ -459,7 +459,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 		//-----------------------------------Pulos para rótulos Inválidos---------------------------------------------
 		if((tokenList[i].getName() == "JMP")|(tokenList[i].getName() == "JMPP")|(tokenList[i].getName() == "JMPN")|(tokenList[i].getName() == "JMPZ"))
 		{
-			//log<LOG_ERROR>("Linha %1%: Pulo para rótulo Inválido", "Semântico") % tokenList[i].getLine();
+			log<LOG_ERROR>("Linha %1%: Pulo para rótulo Inválido", "Semântico") % tokenList[i].getLine();
 			cout<<"Pulo para rótulo inválido, Linha: "<<tokenList[i].getLine()<<endl;
 		}
 	}
@@ -501,7 +501,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 					if((tokenList[i].getLine() > linhaText)&&(tokenList[i].getLine() < linhaData))
 					{
 						cout<<"Instrução inválida!! Linha:"<<tokenList[i].getLine()<<endl;
-						//log<LOG_ERROR>("Linha %1%: Instrução Inválida", "Sintático") % tokenList[i].getLine();
+						log<LOG_ERROR>("Linha %1%: Instrução Inválida", "Sintático") % tokenList[i].getLine();
 						//log<LOG_ERROR>("DOMINGAO DO FAUSTAO");
 					}
 							
@@ -512,7 +512,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 			{
 				if((tokenList[i].getName() != "SPACE")&&(tokenList[i].getName() != "CONST"))
 				{
-					//log<LOG_ERROR>("Linha %1%: Diretiva Inválida", "Sintático") % tokenList[i].getLine();
+					log<LOG_ERROR>("Linha %1%: Diretiva Inválida", "Sintático") % tokenList[i].getLine();
 					cout<<"Diretiva inválida!! Linha:"<<tokenList[i].getLine()<<endl;
 				}
 			}	
