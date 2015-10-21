@@ -1,6 +1,6 @@
 DATA VIR DEPOIS DA SEÇÃO TEXT															Semântico				ok
 
-COPY;																											
+COPY;	                                                                             sintático			ok																							
 CONST DEVE ACEITAR HEXADECIMAL;														
 	
 declarações ausentes;																			label table	

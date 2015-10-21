@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include <token.hpp>
+
 class FileLoader
 {
 public:
@@ -11,6 +13,7 @@ public:
 	virtual ~FileLoader();
 	std::vector<std::string> LoadFile(const std::string& fileName);
 	void SaveFile(const std::string& fileName, const std::vector<std::string>& lineVector);
+	void SaveObjectFile(const std::string& fileName, const std::vector<Token>& tokenList);
 
 
 

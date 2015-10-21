@@ -1,6 +1,7 @@
 #include <parser.hpp>
 #include <verboseLog.hpp>
 #include <macro.hpp>
+#include <fileLoader.hpp>
 #include <boost/algorithm/string.hpp>
 
 
@@ -11,6 +12,11 @@ using namespace std;
 
 Parser::Parser(const std::string& inputFile, const std::string& outputFile, std::vector<Symbol>& labelTable, std::vector<Token>& tokenList)
 {
+	this->outputFile = outputFile + ".o";
+	this->inputFile = inputFile + ".mcr";
+
+	log<LOG_INFO>("Arquivos de Macro. Input: %1%. Output: %2%.") % this->inputFile % this->outputFile;
+
 	//Variáveis para debug
 	unsigned int i = 0;
 	string testeName;
@@ -28,7 +34,11 @@ Parser::Parser(const std::string& inputFile, const std::string& outputFile, std:
 		log<LOG_DEBUG>("Nome: %1% Tipo: %2%") % testeName % testeTipo;
 
 	}
-	detectError(tokenList);
+	detectError(labelTable, tokenList);
+
+	//Imprime o arquivo traduzido
+	FileLoader file;
+	file.SaveObjectFile(this->outputFile, tokenList);
 }
 
 Parser::~Parser()
@@ -94,6 +104,7 @@ void Parser::secondPass(std::vector<Symbol>& labelTable, std::vector<Token>& tok
 
 		}
 	}
+	
 }
 
 void Parser::isInstruction(std::vector<Token>& tokenList)
@@ -220,7 +231,12 @@ void Parser::isLabel(vector<Symbol>& labelTable, vector<Token>& tokenList)
 		{
 			for(j = 0; j < labelTable.size(); j++)
 			{
-				if(tokenList[i].getName() == labelTable[j].getName())
+				std::string tokenName = tokenList[i].getName();
+				if(tokenName.back() == ',')
+				{
+					tokenName.pop_back();
+				}
+				if(tokenName == labelTable[j].getName())
 				{
 					tokenList[i].setType("LABEL");
 					convert = to_string(labelTable[j].getAdress());
@@ -232,7 +248,7 @@ void Parser::isLabel(vector<Symbol>& labelTable, vector<Token>& tokenList)
 	}
 }
 
-void Parser::detectError(vector<Token> tokenList)
+void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 {
 	unsigned int i;
 	int linhaData = 0;
@@ -273,7 +289,7 @@ void Parser::detectError(vector<Token> tokenList)
 		//------------------------Diretivas ou Instruções na sessão errada Errada----------------------------------------
 		if(!dataAntes)
 		{
-			if((tokenList[i].getName() == "CONST")||(tokenList[i].getName() == "SPACE"))
+			if((tokenList[i].getName() == "CONST")|(tokenList[i].getName() == "SPACE"))
 			{
 				//Se a linha de const ou space for anterior a linha de Section Data
 				if(tokenList[i].getLine() < linhaData)
@@ -321,6 +337,11 @@ void Parser::detectError(vector<Token> tokenList)
 					log<LOG_ERROR>("Linha %1%: Tipo de Argumento Inválido", "Sintático") % tokenList[i].getLine();
 				}
 				//----------------------------------------------------------------------------------------------------------------
+				//----------------------------------------------Copy sem vírgula--------------------------------------------------
+				if(tokenList[i+1].getName().back() != ',')
+				{
+					log<LOG_ERROR>("Linha %1%: Estrutura inválida da instrução COPY.", "Sintático") % tokenList[i].getLine();
+				}
 			}
 			else if(tokenList[i].getName() == "STOP")
 			{
@@ -349,6 +370,21 @@ void Parser::detectError(vector<Token> tokenList)
 				//----------------------------------------------------------------------------------------------------------------
 			}
 		}
+		//Divisão por 0
+		/*
+		if(tokenList[i].getName() == "DIV")
+		{
+			for(j = 0; j < labelTable.size(); j++)
+			{
+				if(tokenList[i+1].getName() == labelTable[j].getName())
+				{
+					tokenList[i].setType("LABEL");
+					convert = to_string(labelTable[j].getAdress());
+					tokenList[i].setOp(convert);
+					break;
+				}
+			}
+		}*/
 		//------------------------------------------------------------------------------------------------------------
 		//------------------------------------------Seção inválida----------------------------------------------------
 		if((tokenList[i].getName() == "SECTION") && ((tokenList[i+1].getName() != "TEXT") && (tokenList[i+1].getName() != "DATA")))

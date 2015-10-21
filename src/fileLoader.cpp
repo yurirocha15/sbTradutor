@@ -38,10 +38,6 @@ vector<string> FileLoader::LoadFile(const string& fileName)
 		log<LOG_ERROR>("Impossível abrir o arquivo %1%.") % fileName;
 		throw "Impossível abrir o arquivo.";
 	}
-	for(std::string line : lineVector)
-	{
-		
-	}
 
 	return lineVector;
 }
@@ -51,9 +47,27 @@ void FileLoader::SaveFile(const string& fileName, const vector<string>& lineVect
 	ofstream outputFile (fileName);
 	if(outputFile.is_open())
 	{
-		for(unsigned int i = 0; i < lineVector.size(); i++)
+		for(auto& line : lineVector)
 		{
-			outputFile << lineVector[i] << std::endl;
+			outputFile << line << std::endl;
+		}
+	}
+	else
+	{
+		log<LOG_ERROR>("Impossível criar o arquivo %1%.") % fileName;
+		throw "Impossível criar o arquivo.";
+	}
+}
+
+void FileLoader::SaveObjectFile(const std::string& fileName, const std::vector<Token>& tokenList)
+{
+	ofstream outputFile (fileName);
+	if(outputFile.is_open())
+	{
+		for(auto token : tokenList)
+		{
+			if(token.getType() != "DIRETIVA")
+				outputFile << token.getOp() << " ";
 		}
 	}
 	else
