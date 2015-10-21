@@ -16,7 +16,7 @@ Dois rótulos na mesma linha;
 rótulos repetidos;																				label Table
 seção TEXT ou DATA faltante;															facil			Semântico			ok
 seção inválida;																						facil			semântico			ok
-tipo de argumento inválido;																facil			sintático		Fazendo...
+tipo de argumento inválido;																facil			sintático		Argumentos para instrução ok
 endereço de memória não reservado;												
 modificação de um valor constante;
 

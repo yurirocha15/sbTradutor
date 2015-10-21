@@ -315,6 +315,12 @@ void Parser::detectError(vector<Token> tokenList)
 				{
 					log<LOG_ERROR>("Linha %1%: Instrução com quantidade de operandos Inválidos", "Sintático") % tokenList[i].getLine();		
 				}
+				//-----------------------------------Tipo de Argumento Inválido--------------------------------------------------
+				if(((p1 == atual)&&(tokenList[i+1].getType() != "LABEL"))|((p2 == atual)&&(tokenList[i+2].getType() != "LABEL")))
+				{
+					log<LOG_ERROR>("Linha %1%: Tipo de Argumento Inválido", "Sintático") % tokenList[i].getLine();
+				}
+				//----------------------------------------------------------------------------------------------------------------
 			}
 			else if(tokenList[i].getName() == "STOP")
 			{
@@ -335,6 +341,12 @@ void Parser::detectError(vector<Token> tokenList)
 				{
 					log<LOG_ERROR>("Linha %1%: Instrução com quantidade de operandos Inválidos", "Sintático") % tokenList[i].getLine();		
 				}
+				//-----------------------------------Tipo de Argumento Inválido--------------------------------------------------
+				if(((p1 == atual)&&(tokenList[i+1].getType() != "LABEL")))
+				{
+					log<LOG_ERROR>("Linha %1%: Tipo de Argumento Inválido", "Sintático") % tokenList[i].getLine();
+				}
+				//----------------------------------------------------------------------------------------------------------------
 			}
 		}
 		//------------------------------------------------------------------------------------------------------------
@@ -344,7 +356,6 @@ void Parser::detectError(vector<Token> tokenList)
 			log<LOG_ERROR>("Linha %1%: Seção Inválida", "Semântico") % tokenList[i].getLine();	
 		}
 		//---------------------------------------------------------------------------------------------------------------
-		//-----------------------------------Tipo de Argumento Inválido--------------------------------------------------
 	}
 	//Código sem instrução stop
 	if(!hasStop)
