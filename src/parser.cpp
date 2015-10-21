@@ -97,8 +97,8 @@ std::vector<Token> Parser::firstPass(std::vector<std::string> lineVector, std::v
 			{
 				if(j+1 < tokensLine.size())
 				{
-					size_t found = tokenList[i].getName().find_first_of("0123456789");
-					if(found)
+					size_t found = tokensLine[j+1].find_first_of("0123456789");
+					if(found != std::string::npos)
 					{
 						tokenList.back().setSize(stoi(tokensLine[j+1]));
 						tokenList.back().setSpace_const("CONST");

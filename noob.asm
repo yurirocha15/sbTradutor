@@ -9,4 +9,4 @@ SECTION DATA
     A: Space
     c: space
 	B:		SPACE 2;7
-	DOIS:	CONST	0;9
+	DOIS:	CONST 0;9
