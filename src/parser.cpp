@@ -97,9 +97,28 @@ std::vector<Token> Parser::firstPass(std::vector<std::string> lineVector, std::v
 			{
 				if(j+1 < tokensLine.size())
 				{
-					size_t found = tokensLine[j+1].find_first_of("0123456789");
-					if(found != std::string::npos)
+					size_t found = tokensLine[j+1].find_first_of("X0123456789");
+					if(found != string::npos)
 					{
+						size_t found = tokensLine[j+1].find_first_of("X");
+						if(found != string::npos)
+						{
+							int decimal;
+							try
+							{
+								decimal = stoi(tokensLine[j+1],0,16);
+							}
+							catch(const invalid_argument& e)
+							{
+								log<LOG_ERROR>("Linha %1%: Hexadecimal inválido") % (i+1);
+							}
+							tokenList.back().setSize(decimal);
+							tokenList.back().setSpace_const("CONST");
+							labelTable.back().setSize(decimal);
+							labelTable.back().setSpace_const("CONST");
+							adress ++;
+							break;
+						}
 						tokenList.back().setSize(stoi(tokensLine[j+1]));
 						tokenList.back().setSpace_const("CONST");
 						labelTable.back().setSize(stoi(tokensLine[j+1]));
@@ -110,7 +129,7 @@ std::vector<Token> Parser::firstPass(std::vector<std::string> lineVector, std::v
 				}
 				else
 				{
-					log<LOG_ERROR>("Linha %1%: endereço de Memoria não Reservado", "Sintático") % (i+1); 
+					log<LOG_ERROR>("Linha %1%: constante não definido", "Sintático") % (i+1); 
 				}
 			}
 			else if(tokensLine[j] == "SPACE")
@@ -455,7 +474,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 		//------------------------------------------Seção inválida----------------------------------------------------
 		if((tokenList[i].getName() == "SECTION") && ((tokenList[i+1].getName() != "TEXT") && (tokenList[i+1].getName() != "DATA")))
 		{
-			log<LOG_ERROR>("Linha %1%: Seção Inválida", "Semântico") % tokenList[i].getLine();	
+			log<LOG_ERROR>("Linha %1%: Seção Inválida", "Sintático") % tokenList[i].getLine();	
 		}
 		//---------------------------------------------------------------------------------------------------------------
 		//----------------------------------Declaração Ausente-----------------------------------------------------------
@@ -551,6 +570,10 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 				log<LOG_ERROR>("Linha %1%: Diretiva Inválida", "Sintático") % tokenList[i].getLine();	
 				//cout<<"Diretiva Inválida Linha: "<<tokenList[i].getLine()<<endl;
 			}
+		}
+		if((tokenList[i].getName() == "STORE")&&(tokenList[i+1].getSpace_const() == "CONST"))
+		{
+			log<LOG_ERROR>("Linha %1%: Modificação de um valor Constante", "Semântico") % tokenList[i].getLine();
 		}
 	}
 }
