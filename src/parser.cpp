@@ -127,12 +127,22 @@ std::vector<Token> Parser::firstPass(std::vector<std::string> lineVector, std::v
 						adress += stoi(tokensLine[j+1]);
 						break;
 					}
-				else
+					else
 					{
+						tokenList.back().setSpace_const("SPACE");
 						tokenList.back().setSize(1);
+						labelTable.back().setSpace_const("SPACE");
 						labelTable.back().setSize(1);
 						adress++;	
 					}
+				}
+				else
+				{
+					tokenList.back().setSpace_const("SPACE");
+					tokenList.back().setSize(1);
+					labelTable.back().setSpace_const("SPACE");
+					labelTable.back().setSize(1);
+					adress++;	
 				}
 			}
 			else

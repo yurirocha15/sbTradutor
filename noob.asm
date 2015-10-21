@@ -6,5 +6,7 @@ div DOIS;		4
 		stop;				6
 
 SECTION DATA
+    A: Space
+    c: space
 	B:		SPACE 2;7
 	DOIS:	CONST	2;9
