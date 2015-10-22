@@ -41,12 +41,6 @@ Preprocessing::Preprocessing(const std::string& inputFile, const std::string& ou
 	{
 		throw e;
 	}
-
-	for(auto& line : lineVector)
-	{
-		std::cout << line << std::endl;
-	}
-
 }
 
 Preprocessing::~Preprocessing()
