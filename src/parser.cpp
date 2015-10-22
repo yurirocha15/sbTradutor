@@ -31,7 +31,7 @@ Parser::Parser(const std::string& inputFile, const std::string& outputFile, std:
 	{
 		testeName = tokenList[i].getName();
 		testeTipo = tokenList[i].getType();
-		log<LOG_DEBUG>("Nome: %1% Tipo: %2% Linha: %3%") % testeName % testeTipo %tokenList[i].getLine();
+		log<LOG_DEBUG>("Nome: %1% Tipo: %2% Linha: %3%") % testeName % testeTipo %tokenList[i].getOp();
 		if(tokenList[i].getSize() != 999)
 		{
 			log<LOG_DEBUG>("Tamanho Memoria: %1% ") % tokenList[i].getSize();	
@@ -306,27 +306,63 @@ void Parser::isLabel(vector<Symbol>& labelTable, vector<Token>& tokenList)
 {
 	unsigned int i,j;
 	string convert;
-
+	string convert2;
+	vector<string> split_string;
+	size_t found;
 	for(i = 0; i < tokenList.size(); i++)
 	{
 		if(tokenList[i].getType().empty())
 		{
-			for(j = 0; j < labelTable.size(); j++)
+			found = tokenList[i].getName().find("+");
+			if(found == string::npos)
 			{
-				std::string tokenName = tokenList[i].getName();
-				if(tokenName.back() == ',')
+				for(j = 0; j < labelTable.size(); j++)
 				{
-					tokenName.pop_back();
+					std::string tokenName = tokenList[i].getName();
+					if(tokenName.back() == ',')
+					{
+						tokenName.pop_back();
+					}
+					if(tokenName == labelTable[j].getName())
+					{
+						tokenList[i].setType("LABEL");
+						convert = to_string(labelTable[j].getAdress());
+						tokenList[i].setOp(convert);
+						tokenList[i].setSize(labelTable[j].getSize());
+						tokenList[i].setSpace_const(labelTable[j].getSpace_const());
+						break;
+					}
 				}
-				if(tokenName == labelTable[j].getName())
+			}
+			else
+			{
+				string temp = tokenList[i].getName();
+				boost::split(split_string,temp,boost::is_any_of("+"));
+				for(j = 0; j < labelTable.size(); j++)
 				{
-					tokenList[i].setType("LABEL");
-					convert = to_string(labelTable[j].getAdress());
-					tokenList[i].setOp(convert);
-					tokenList[i].setSize(labelTable[j].getSize());
-					tokenList[i].setSpace_const(labelTable[j].getSpace_const());
-					break;
-				}
+					std::string tokenName = split_string[0];
+					if(tokenName.back() == ',')
+					{
+						tokenName.pop_back();
+					}
+					if(tokenName == labelTable[j].getName())
+					{
+						tokenList[i].setType("LABEL");
+						if(split_string.size() == 2)
+						{
+							convert = to_string((labelTable[j].getAdress()+stoi(split_string[1])));
+						}
+						else
+						{
+							log<LOG_ERROR>("Linha %1%: Estrutra de Acesso de memória incorreto ", "Sintático") % tokenList[i].getLine();
+							convert = to_string(labelTable[j].getAdress());
+						}
+						tokenList[i].setOp(convert);
+						tokenList[i].setSize(labelTable[j].getSize());
+						tokenList[i].setSpace_const(labelTable[j].getSpace_const());
+						break;
+					}
+				}	
 			}
 		}
 	}
@@ -382,13 +418,12 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 				//Se a linha de const ou space for anterior a linha de Section Data
 				if(tokenList[i].getLine() < linhaData)
 				{
-					log<LOG_ERROR>("Linha %1%: 1Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();			
+					log<LOG_ERROR>("Linha %1%: Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();			
 				}
 			}
 			if((tokenList[i].getType() == "INSTRUÇÃO") && (tokenList[i].getLine() < linhaData))
 			{
-				log<LOG_ERROR>("Linha %1%: 2Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();
-				cout << "Entrou Dota" << endl;
+				log<LOG_ERROR>("Linha %1%: Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();
 			}
 		}
 		else
@@ -398,12 +433,12 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 				//Se a linha de const ou space for anterior a linha de Section Data
 				if(tokenList[i].getLine() < linhaData)
 				{
-					log<LOG_ERROR>("Linha %1%: 3Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();			
+					log<LOG_ERROR>("Linha %1%: Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();			
 				}
 			}
 			if((tokenList[i].getType() == "INSTRUÇÃO")&&(tokenList[i].getLine() > linhaData))
 			{
-				log<LOG_ERROR>("Linha %1%: 4Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();
+				log<LOG_ERROR>("Linha %1%: Diretiva ou Instrução na sessão errada", "Semântico") % tokenList[i].getLine();
 			}
 		} 
 		//-----------------------------------------------------------------------------------------------------------
