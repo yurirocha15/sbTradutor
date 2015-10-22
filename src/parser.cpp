@@ -348,8 +348,10 @@ void Parser::isLabel(vector<Symbol>& labelTable, vector<Token>& tokenList)
 					if(tokenName == labelTable[j].getName())
 					{
 						tokenList[i].setType("LABEL");
+						int soma = 0;
 						if(split_string.size() == 2)
 						{
+							soma = stoi(split_string[1]);
 							convert = to_string((labelTable[j].getAdress()+stoi(split_string[1])));
 						}
 						else
@@ -360,6 +362,10 @@ void Parser::isLabel(vector<Symbol>& labelTable, vector<Token>& tokenList)
 						tokenList[i].setOp(convert);
 						tokenList[i].setSize(labelTable[j].getSize());
 						tokenList[i].setSpace_const(labelTable[j].getSpace_const());
+						if(soma >= tokenList[i].getSize())
+						{
+							log<LOG_ERROR>("Linha %1%: Acesso de memória não reservado ", "Semântico") % tokenList[i].getLine();
+						}
 						break;
 					}
 				}	
