@@ -182,8 +182,7 @@ int main(int argc, char* argv[])
     
     //Exeplos output
     log<LOG_DEBUG>("TO DEBUGANDO %1% %2%") % 5 % inputFile;
-    log<LOG_INFO>("VERBOSANDO");
-    log<LOG_WARNING>("WARNINGZANDO");
+    log<LOG_INFO>("Programa Terminado. Volte Sempre.");
 
     return 0;
 }

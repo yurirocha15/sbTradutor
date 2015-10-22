@@ -21,6 +21,7 @@ private:
 
 	std::string inputFile;
 	std::string outputFile;
+	bool hasError;
 };
 
 #endif //_PARSER_HPP_
