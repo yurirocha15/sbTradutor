@@ -112,7 +112,7 @@ std::vector<Token> Parser::firstPass(std::vector<std::string> lineVector, std::v
 						size_t found = tokensLine[j+1].find_first_of("X");
 						if(found != string::npos)
 						{
-							int decimal;
+							int decimal = 0;
 							try
 							{
 								decimal = stoi(tokensLine[j+1],0,16);
@@ -388,7 +388,7 @@ void Parser::detectError(vector<Symbol>& labelTable, vector<Token> tokenList)
 	int dataAntes;
 	int atual;
 	int p1,p2,p3;
-	int labelDeclaration;
+	int labelDeclaration = 0;
 	bool hasStop = false;
 	string last;
 	//---------------------------------------Loop Que detecta a linha da Section Data e Text---------------------------

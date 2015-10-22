@@ -1,6 +1,6 @@
 SECtION TEXT
 INICIO: input	B;	0
-		ADD B+2;		2
+		ADD B+4;		2
 		stop;				6
 
 SECTION DATA
