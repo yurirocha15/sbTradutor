@@ -1,6 +1,6 @@
 ## sbTradutor1
 
-C++ code implementing an "Educational Assembly" Compiler. 
+Assembler for a pseudo-assembly language, created as a Systems Software course project at the University of Brasília.
 
 Developed by:
   - Raphael Arthur Resende
