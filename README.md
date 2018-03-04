@@ -1,6 +1,6 @@
 ## sbTradutor1
 
-C++ code implementing a Educational Assembly Compiler. 
+C++ code implementing an "Educational Assembly" Compiler. 
 
 Developed by:
   - Raphael Arthur Resende
